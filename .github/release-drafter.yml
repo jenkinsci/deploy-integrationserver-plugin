@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: deploy-integrationserver-$NEXT_MINOR_VERSION
