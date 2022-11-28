@@ -1,2 +1,7 @@
 _extends: .github
+name-template: $NEXT_MINOR_VERSION
 tag-template: deploy-integrationserver-$NEXT_MINOR_VERSION
+template: |
+    ## What's Changed
+    
+    $CHANGES
