@@ -11,7 +11,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>deploy-integrationserver</artifactId>
-    <version>${revision}</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <name>Deploy to webMethods Integration Server Plugin</name>
     <description>This plugin allows to deploy webMethods Integration Server/ Microservices Runtime package(s).</description>
@@ -39,9 +39,9 @@
     
 	<properties>
         <revision>1.0</revision>
+        <changelist>-SNAPSHOT</changelist>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.332.4</jenkins.version>
-        <java.level>11</java.level>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>    
 	</properties>
 
@@ -75,30 +75,6 @@
 		    <artifactId>httpmime</artifactId>
 		    <version>4.5.13</version>
 		</dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>structs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-cps</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-job</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-basic-steps</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-durable-task-step</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <repositories>
