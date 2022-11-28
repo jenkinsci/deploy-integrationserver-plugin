@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: install-is-package-$NEXT_MINOR_VERSION
