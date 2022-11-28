@@ -1,4 +1,4 @@
-package hudson.plugins;
+package io.jenkins.plugins.deployintegrationserver;
 
 import hudson.Launcher;
 import hudson.Extension;
