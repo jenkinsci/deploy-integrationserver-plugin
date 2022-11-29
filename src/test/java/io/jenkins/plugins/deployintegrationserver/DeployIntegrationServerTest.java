@@ -1,8 +1,9 @@
 package io.jenkins.plugins.deployintegrationserver;
 
-import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Label;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -11,70 +12,31 @@ public class DeployIntegrationServerTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
-
-    final String name = "Bobby";
     
     final String serverUrl = "http://localhost:5555";
-    final String packageNameRegex = "CustomPackage.zip";
-    final String operationType = "upload";
+    final String packageName = "CustomPackage.zip";
     final String credentialsId = "";
-
-    @Test
-    public void testConfigRoundtrip() throws Exception {
-        /*FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.getPublishersList().add(new WebMethodsIntegrationServer(serverUrl, packageNameRegex, credentialsId, operationType));
-        project = jenkins.configRoundtrip(project);
-        jenkins.assertEqualDataBoundBeans(new WebMethodsIntegrationServer(serverUrl, packageNameRegex, credentialsId, operationType), project.getPublishersList().get(project.getPublishersList().size() - 1));*/
+    
+    private DeployIntegrationServer deployIntegrationServer;
+    
+    @Before
+    public void setup() throws Exception {
+    	deployIntegrationServer = new DeployIntegrationServer(serverUrl, packageName, credentialsId);
     }
-
+    
     @Test
-    public void testConfigRoundtripFrench() throws Exception {
-        /*FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
-        builder.setUseFrench(true);
-        project.getBuildersList().add(builder);
-        project = jenkins.configRoundtrip(project);
-
-        HelloWorldBuilder lhs = new HelloWorldBuilder(name);
-        lhs.setUseFrench(true);
-        jenkins.assertEqualDataBoundBeans(lhs, project.getBuildersList().get(0));*/
+    public void testConfigure() {
+    	Assert.assertEquals(serverUrl, deployIntegrationServer.getServerUrl());
+    	Assert.assertEquals(packageName, deployIntegrationServer.getPackageName());
+    	Assert.assertEquals(credentialsId, deployIntegrationServer.getCredentialsId());
     }
-
+    
     @Test
-    public void testBuild() throws Exception {
-        /*FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
-        project.getBuildersList().add(builder);
-
-        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
-        jenkins.assertLogContains("Hello, " + name, build);*/
-    }
-
-    @Test
-    public void testBuildFrench() throws Exception {
-
-        /*FreeStyleProject project = jenkins.createFreeStyleProject();
-        HelloWorldBuilder builder = new HelloWorldBuilder(name);
-        builder.setUseFrench(true);
-        project.getBuildersList().add(builder);
-
-        FreeStyleBuild build = jenkins.buildAndAssertSuccess(project);
-        jenkins.assertLogContains("Bonjour, " + name, build);*/
-    }
-
-    @Test
-    public void testScriptedPipeline() throws Exception {
-        /*String agentLabel = "my-agent";
-        jenkins.createOnlineSlave(Label.get(agentLabel));
-        WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
-        String pipelineScript
-                = "node {\n"
-                + "  greet '" + name + "'\n"
-                + "}";
-        job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        WorkflowRun completedBuild = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
-        String expectedString = "Hello, " + name + "!";
-        jenkins.assertLogContains(expectedString, completedBuild);*/
-    }
+    public void testConfigureRoundTrip() throws Exception {
+    	FreeStyleProject project = jenkins.createFreeStyleProject();
+    	project.getPublishersList().add(deployIntegrationServer);
+    	project = jenkins.configRoundtrip(project);
+    	jenkins.assertEqualDataBoundBeans(deployIntegrationServer, project.getPublishersList().get(0));
+    } 
 
 }
