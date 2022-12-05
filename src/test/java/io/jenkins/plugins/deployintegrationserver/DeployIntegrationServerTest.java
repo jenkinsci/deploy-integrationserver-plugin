@@ -13,30 +13,47 @@ public class DeployIntegrationServerTest {
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
     
-    final String serverUrl = "http://localhost:5555";
-    final String packageName = "CustomPackage.zip";
-    final String credentialsId = "";
+    private String singleTargetAliases = "serveralias";
+	private String groupTargetAliases = "groupalias";
+	
+	private String deployerHomeDirectory = "C:\\SoftwareAG\\IntegrationServer\\instances\\default\\packages\\WmDeployer\\bin";
+	private String deployerHost = "localhost";
+	private String deployerPort = "5555";
+	private String deployerCredentialsId = "";
+	
+	private String repositoryAlias = "testrepoalias";
+	private String repositoryDirectory = "C:\\build";
+	
+	private String composites = "TestPackage";
+	
+	private String projectName = "testproject";
     
     private DeployIntegrationServer deployIntegrationServer;
     
     @Before
     public void setup() throws Exception {
-    	//deployIntegrationServer = new DeployIntegrationServer(serverUrl, packageName, credentialsId);
+    	deployIntegrationServer = new DeployIntegrationServer(singleTargetAliases, groupTargetAliases, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentialsId, repositoryAlias, repositoryDirectory, composites, projectName);
     }
     
     @Test
     public void testConfigure() {
-    	/*Assert.assertEquals(serverUrl, deployIntegrationServer.getServerUrl());
-    	Assert.assertEquals(packageName, deployIntegrationServer.getPackageName());
-    	Assert.assertEquals(credentialsId, deployIntegrationServer.getCredentialsId());*/
+    	Assert.assertEquals(singleTargetAliases, deployIntegrationServer.getSingleTargetAliases());
+    	Assert.assertEquals(groupTargetAliases, deployIntegrationServer.getGroupTargetAliases());
+    	Assert.assertEquals(deployerHomeDirectory, deployIntegrationServer.getDeployerHomeDirectory());
+    	Assert.assertEquals(deployerHost, deployIntegrationServer.getDeployerHost());
+    	Assert.assertEquals(deployerPort, deployIntegrationServer.getDeployerPort());
+    	Assert.assertEquals(deployerCredentialsId, deployIntegrationServer.getDeployerCredentialsId());
+    	Assert.assertEquals(repositoryAlias, deployIntegrationServer.getRepositoryAlias());
+    	Assert.assertEquals(composites, deployIntegrationServer.getComposites());
+    	Assert.assertEquals(projectName, deployIntegrationServer.getProjectName());
     }
     
     @Test
     public void testConfigureRoundTrip() throws Exception {
-    	/*FreeStyleProject project = jenkins.createFreeStyleProject();
+    	FreeStyleProject project = jenkins.createFreeStyleProject();
     	project.getPublishersList().add(deployIntegrationServer);
     	project = jenkins.configRoundtrip(project);
-    	jenkins.assertEqualDataBoundBeans(deployIntegrationServer, project.getPublishersList().get(0));*/
+    	jenkins.assertEqualDataBoundBeans(deployIntegrationServer, project.getPublishersList().get(0));
     } 
 
 }
