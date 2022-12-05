@@ -2,15 +2,80 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" 
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" 
 	xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
-    
-    <f:entry title="${%ServerURL}" field="serverUrl">
-        <f:textbox />
-    </f:entry>
-    <f:entry title="${%PackageName}" field="packageName">
-        <f:textbox />
-    </f:entry>
-    <f:entry title="${%Credentials}" field="credentialsId">
-    	<c:select/>
-  	</f:entry>
-
+	
+	<f:section title="Repository">
+   		<table style="width: 100%">
+   			<tr>
+   				<td>
+   					<f:entry title="${%RepositoryAlias}" field="repositoryAlias">
+        				<f:textbox />
+    				</f:entry>
+   				</td>
+   				<td>
+   					<f:entry title="${%RepositoryDirectory}" field="repositoryDirectory">
+        				<f:textbox />
+    				</f:entry>
+   				</td>
+   				<td>
+   					<f:entry title="${%CompositeNames}" field="composites">
+						<f:textbox />
+					</f:entry>
+   				</td>
+   			</tr>
+   		</table>
+   	</f:section>
+   	
+   	<f:section title="Deployer">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<f:entry title="${%DeployerHost}" field="deployerHost">
+	        			<f:textbox />
+	    			</f:entry>
+				</td>
+				<td>
+					<f:entry title="${%DeployerPort}" field="deployerPort">
+	        			<f:textbox />
+	    			</f:entry>
+				</td>
+				<td>
+					<f:entry title="${%DeployerCredentials}" field="deployerCredentialsId">
+	    				<c:select/>
+	  				</f:entry>
+				</td>
+			</tr>
+		</table>
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<f:entry title="${%DeployerHomeDirectory}" field="deployerHomeDirectory">
+	        			<f:textbox />
+	    			</f:entry>
+				</td>
+				<td>
+					<f:entry title="${%ProjectName}" field="projectName">
+	        			<f:textbox />
+	    			</f:entry>
+				</td>
+			</tr>
+		</table>
+	</f:section>
+	
+	<f:section title="Target">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<f:entry title="${%SingleTargetAliases}" field="singleTargetAliases">
+        				<f:textbox />
+    				</f:entry>
+				</td>
+				<td>
+					<f:entry title="${%GroupTargetAliases}" field="groupTargetAliases">
+        				<f:textbox />
+    				</f:entry>
+				</td>
+			</tr>
+		</table>
+	</f:section>
+    			
 </j:jelly>
