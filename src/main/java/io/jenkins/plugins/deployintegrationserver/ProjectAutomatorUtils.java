@@ -1,11 +1,8 @@
 package io.jenkins.plugins.deployintegrationserver;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +19,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Launcher.ProcStarter;
+import hudson.Proc;
 import hudson.model.TaskListener;
 
 public class ProjectAutomatorUtils {
@@ -127,25 +127,19 @@ public class ProjectAutomatorUtils {
 		return doc;
 	}
 	
-	public static void createFile(Document xmlDoc, FilePath outputDirectory) throws TransformerConfigurationException, FileNotFoundException, TransformerException, IOException {
+	public static void createFile(Document xmlDoc, FilePath outputDirectory) throws TransformerConfigurationException, FileNotFoundException, TransformerException, IOException, InterruptedException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		DOMSource source = new DOMSource(xmlDoc);
 		
-		FileOutputStream output = null;
-		try {
-			output = new FileOutputStream(outputDirectory + File.separator + "projectAutomator.xml");
-			StreamResult result = new StreamResult(output);
-			transformer.transform(source, result);
-		} finally {
-			if(output != null) {
-				output.close();
-			}
-		}
+		FilePath outputProjectAutomatorPath = new FilePath(outputDirectory, "projectAutomator.xml");
+		
+		StreamResult result = new StreamResult(outputProjectAutomatorPath.write());
+		transformer.transform(source, result);
 	}
 	
-	public static int runProjectAutomatorExecutable(String operatingSystem, String deployerHomeDirectory, FilePath projectAutomatorFileDirectory, TaskListener listener) throws IOException, InterruptedException {
+	public static int runProjectAutomatorExecutable(String operatingSystem, String deployerHomeDirectory, FilePath projectAutomatorFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
 		
 		String command = deployerHomeDirectory + File.separator + "projectautomatorUnix.sh " + projectAutomatorFileDirectory + File.separator + "projectAutomator.xml";
 		if(operatingSystem.contains("windows")) {
@@ -154,24 +148,10 @@ public class ProjectAutomatorUtils {
 			command = deployerHomeDirectory + File.separator + "projectautomatorMac.sh " + projectAutomatorFileDirectory + File.separator + "projectAutomator.xml";
 		}
 		
-		Process process = Runtime.getRuntime().exec(command);
-
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(
-					new InputStreamReader(process.getInputStream(), "UTF-8"));
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				listener.getLogger().println(line);
-			}
-		} finally {
-			if(reader != null) {
-				reader.close();
-			}
-		}
+		ProcStarter ps = launcher.launch();
+		Proc p = launcher.launch(ps.cmdAsSingleString(command).quiet(true).stdout(listener));
 		
-		
-		return process.waitFor();
+		int exitCode = p.join();
+		return exitCode;
 	}
 }

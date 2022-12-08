@@ -13,7 +13,7 @@
         <message deploymentProject="">Created project mytestproject succesfully</message>
         <message deploymentProject="">Created Set mytestprojectDS of type Repository for project mytestproject</message>
         <message deploymentProject="">Updated Source Server Aliases mytestrepo, on Set mytestprojectDS of type Repository for project mytestproject</message>
-        <message deploymentProject="">Successfully added Repository Objects mytestrepo$IS$DCPUtils$COMPOSITE_INCL,null to Deployment Set mytestprojectDS of type Repository for project mytestproject</message>
+        <message deploymentProject="">Successfully added Repository Objects mytestrepo$IS$AHUtils$COMPOSITE_INCL,null to Deployment Set mytestprojectDS of type Repository for project mytestproject</message>
         <message deploymentProject="">Successfully created map mytestprojectDM in project mytestproject</message>
         <message deploymentProject="">Added server aliases to the deployment map mytestprojectDM in the project mytestproject</message>
         <message deploymentProject="">Added server aliases to the deployment map mytestprojectDM in the project mytestproject</message>

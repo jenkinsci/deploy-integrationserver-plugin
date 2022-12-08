@@ -189,11 +189,14 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		} catch (IOException ioe) {
 			listener.getLogger().println(ioe.getMessage());
 			throw new AbortException();
+		} catch (InterruptedException ie) {
+			listener.getLogger().println(ie.getMessage());
+			throw new AbortException();
 		}
 		
 		// Run Project Automator Executable
 		try {
-			int exitStatusCode = ProjectAutomatorUtils.runProjectAutomatorExecutable(operatingSystem, deployerHomeDirectory, workspace, listener);
+			int exitStatusCode = ProjectAutomatorUtils.runProjectAutomatorExecutable(operatingSystem, deployerHomeDirectory, workspace, launcher, listener);
 			listener.getLogger().println("Project Automator exited with status: "+ exitStatusCode);
 			if(exitStatusCode != 0) {
 				throw new AbortException();
@@ -208,7 +211,7 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		
 		// Run Deployer Executable
 		try {
-			int statusCode = DeployerUtils.deployDeploymentCandidate(operatingSystem, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), deploymentCandidateName, projectName, workspace, listener);
+			int statusCode = DeployerUtils.deployDeploymentCandidate(operatingSystem, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), deploymentCandidateName, projectName, workspace, launcher, listener);
 			listener.getLogger().println("Deployer exited with status: "+statusCode);
 			if(statusCode != 0) {
 				throw new AbortException();

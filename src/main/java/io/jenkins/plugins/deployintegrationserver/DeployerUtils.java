@@ -1,16 +1,18 @@
 package io.jenkins.plugins.deployintegrationserver;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Proc;
+import hudson.Launcher.ProcStarter;
 import hudson.model.TaskListener;
 
 public class DeployerUtils {
 
-	public static int deployDeploymentCandidate(String operatingSystem, String deployerHomeDirectory, String deployerHost, String deployerPort, String deployerUsername, String deployerPassword, String deploymentCandidateName, String projectName, FilePath reportFileDirectory, TaskListener listener) throws IOException, InterruptedException {
+	public static int deployDeploymentCandidate(String operatingSystem, String deployerHomeDirectory, String deployerHost, String deployerPort, String deployerUsername, String deployerPassword, String deploymentCandidateName, String projectName, FilePath reportFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+		
 		StringBuilder command = new StringBuilder();
 		command.append(deployerHomeDirectory);
 		command.append(File.separator);
@@ -32,27 +34,14 @@ public class DeployerUtils {
 		command.append(deployerUsername);
 		command.append(" -pwd ");
 		command.append(deployerPassword);
-		command.append(" -force -reportFilePath");
+		command.append(" -force -reportFilePath ");
 		command.append(reportFileDirectory);
 		
-		Process process = Runtime.getRuntime().exec(command.toString());
+		ProcStarter ps = launcher.launch();
+		Proc p = launcher.launch(ps.cmdAsSingleString(command.toString()).quiet(true).stdout(listener));
 		
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(
-					new InputStreamReader(process.getInputStream(), "UTF-8"));
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				listener.getLogger().println(line);
-			}
-		} finally {
-			if(reader != null) {
-				reader.close();
-			}
-		}
+		int code = p.join();
 		
-		
-		return process.waitFor();
+		return code;
 	}
 }
