@@ -3,29 +3,41 @@
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" 
 	xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
 	
-	<f:section title="Repository">
-   		<table style="width: 100%">
-   			<tr>
-   				<td>
-   					<f:entry title="${%RepositoryAlias}" field="repositoryAlias">
-        				<f:textbox />
-    				</f:entry>
-   				</td>
-   				<td>
-   					<f:entry title="${%RepositoryDirectory}" field="repositoryDirectory">
-        				<f:textbox />
-    				</f:entry>
-   				</td>
-   				<td>
-   					<f:entry title="${%CompositeNames}" field="composites">
+	<div style="margin-top: 20px;">
+		<h5>
+			Repository
+		</h5>
+		<hr/>
+		<table style="width: 100%">
+			<tr>
+				<td>
+					<f:entry title="${%RepositoryAlias}" field="repositoryAlias">
+	    				<f:textbox />
+					</f:entry>
+				</td>
+				<td>
+					<f:entry title="${%RepositoryDirectory}" field="repositoryDirectory">
+	    				<f:textbox />
+					</f:entry>
+				</td>
+			</tr>
+		</table>
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<f:entry title="${%DeployAssets}" field="deployAssets">
 						<f:textbox />
 					</f:entry>
-   				</td>
-   			</tr>
-   		</table>
-   	</f:section>
-   	
-   	<f:section title="Deployer">
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div style="margin-top: 20px;">
+		<h5>
+			Deployer
+		</h5>
+		<hr/>
 		<table style="width: 100%;">
 			<tr>
 				<td>
@@ -59,9 +71,13 @@
 				</td>
 			</tr>
 		</table>
-	</f:section>
-	
-	<f:section title="Target">
+	</div>
+   	
+   	<div>
+   		<h5>
+			Target Integration Server/ Group
+		</h5>
+		<hr/>
 		<table style="width: 100%;">
 			<tr>
 				<td>
@@ -76,6 +92,6 @@
 				</td>
 			</tr>
 		</table>
-	</f:section>
+   	</div>
     			
 </j:jelly>

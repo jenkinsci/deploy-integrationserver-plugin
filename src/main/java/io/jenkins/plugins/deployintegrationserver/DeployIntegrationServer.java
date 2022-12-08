@@ -54,12 +54,12 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 	private String repositoryAlias;
 	private String repositoryDirectory;
 	
-	private String composites;
+	private String deployAssets;
 	
 	private String projectName;
     
     @DataBoundConstructor
-    public DeployIntegrationServer(String singleTargetAliases, String groupTargetAliases, String deployerHomeDirectory, String deployerHost, String deployerPort, String deployerCredentialsId, String repositoryAlias, String repositoryDirectory, String composites, String projectName) {
+    public DeployIntegrationServer(String singleTargetAliases, String groupTargetAliases, String deployerHomeDirectory, String deployerHost, String deployerPort, String deployerCredentialsId, String repositoryAlias, String repositoryDirectory, String deployAssets, String projectName) {
 		this.singleTargetAliases = singleTargetAliases;
 		this.groupTargetAliases = groupTargetAliases;
 		this.deployerHomeDirectory = deployerHomeDirectory;
@@ -68,7 +68,7 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		this.deployerCredentialsId = deployerCredentialsId;
 		this.repositoryAlias = repositoryAlias;
 		this.repositoryDirectory = repositoryDirectory;
-		this.composites = composites;
+		this.deployAssets = deployAssets;
 		this.projectName = projectName;
 	}
 
@@ -135,15 +135,6 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		this.deployerHomeDirectory = deployerHomeDirectory;
 	}
 
-	public String getComposites() {
-		return composites;
-	}
-
-	@DataBoundSetter
-	public void setComposites(String composites) {
-		this.composites = composites;
-	}
-
 	public String getProjectName() {
 		return projectName;
 	}
@@ -161,6 +152,15 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 	public void setDeployerPort(String deployerPort) {
 		this.deployerPort = deployerPort;
 	}
+	
+	public String getDeployAssets() {
+		return deployAssets;
+	}
+
+	@DataBoundSetter
+	public void setDeployAssets(String deployAssets) {
+		this.deployAssets = deployAssets;
+	}
 
 	@Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
@@ -174,7 +174,7 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		// Generate Project Automator XML Document
 		Document projectAutomatorXMLDoc = null;
 		try {
-			projectAutomatorXMLDoc = ProjectAutomatorUtils.generateDocument(singleTargetAliases, groupTargetAliases, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), repositoryAlias, repositoryDirectory, composites.split(","), projectName, deploymentSetName, deploymentMapName, deploymentCandidateName);
+			projectAutomatorXMLDoc = ProjectAutomatorUtils.generateDocument(singleTargetAliases, groupTargetAliases, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), repositoryAlias, repositoryDirectory, deployAssets.split(","), projectName, deploymentSetName, deploymentMapName, deploymentCandidateName);
 		} catch (ParserConfigurationException pce) {
 			listener.getLogger().println(pce.getMessage());
 			throw new AbortException();
@@ -274,13 +274,19 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
     		}
     		return FormValidation.ok();
     	}
+    	public FormValidation doCheckRepositoryAlias(@QueryParameter String value) {
+    		if(value.length() == 0) {
+    			return FormValidation.error("Cannot be blank.");
+    		}
+    		return FormValidation.ok();
+    	}
     	public FormValidation doCheckRepositoryDirectory(@QueryParameter String value) {
     		if(value.length() == 0) {
     			return FormValidation.error("Cannot be blank.");
     		}
     		return FormValidation.ok();
     	}
-    	public FormValidation doCheckComposites(@QueryParameter String value) {
+    	public FormValidation doCheckDeployAssets(@QueryParameter String value) {
     		if(value.length() == 0) {
     			return FormValidation.error("Cannot be blank.");
     		}

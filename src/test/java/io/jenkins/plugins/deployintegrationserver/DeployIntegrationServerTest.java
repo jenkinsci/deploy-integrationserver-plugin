@@ -24,7 +24,7 @@ public class DeployIntegrationServerTest {
 	private String repositoryAlias = "testrepoalias";
 	private String repositoryDirectory = "C:\\build";
 	
-	private String composites = "TestPackage";
+	private String deployAssets = "DeployTestPackage";
 	
 	private String projectName = "testproject";
     
@@ -32,7 +32,7 @@ public class DeployIntegrationServerTest {
     
     @Before
     public void setup() throws Exception {
-    	deployIntegrationServer = new DeployIntegrationServer(singleTargetAliases, groupTargetAliases, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentialsId, repositoryAlias, repositoryDirectory, composites, projectName);
+    	deployIntegrationServer = new DeployIntegrationServer(singleTargetAliases, groupTargetAliases, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentialsId, repositoryAlias, repositoryDirectory, deployAssets, projectName);
     }
     
     @Test
@@ -44,7 +44,7 @@ public class DeployIntegrationServerTest {
     	Assert.assertEquals(deployerPort, deployIntegrationServer.getDeployerPort());
     	Assert.assertEquals(deployerCredentialsId, deployIntegrationServer.getDeployerCredentialsId());
     	Assert.assertEquals(repositoryAlias, deployIntegrationServer.getRepositoryAlias());
-    	Assert.assertEquals(composites, deployIntegrationServer.getComposites());
+    	Assert.assertEquals(deployAssets, deployIntegrationServer.getDeployAssets());
     	Assert.assertEquals(projectName, deployIntegrationServer.getProjectName());
     }
     
