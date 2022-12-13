@@ -164,6 +164,18 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 
 	@Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+		
+		// Making sure Deployer Home Directory is a valid directory path and to prevent command injection.
+		FilePath deployerHomeDirectoryPath = new FilePath(workspace.getChannel(), deployerHomeDirectory);
+		if(!deployerHomeDirectoryPath.exists()) {
+			listener.getLogger().println("Deployer Home Directory " + deployerHomeDirectory + " not found.");
+			throw new AbortException();
+		}
+		if(!deployerHomeDirectoryPath.isDirectory()) {
+			listener.getLogger().println("Deployer Home Directory " + deployerHomeDirectory + " isn't a directory.");
+			throw new AbortException();
+		}
+		
 		StandardUsernamePasswordCredentials deployerCredentials = DescriptorImpl.lookupCredentials(run.getParent(), run.getParent().getUrl(), deployerCredentialsId);
 		String operatingSystem = System.getProperty("os.name").toLowerCase();
 		
@@ -196,9 +208,11 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		
 		// Run Project Automator Executable
 		try {
-			int exitStatusCode = ProjectAutomatorUtils.runProjectAutomatorExecutable(operatingSystem, deployerHomeDirectory, workspace, launcher, listener);
+			int exitStatusCode = ProjectAutomatorUtils.runProjectAutomatorExecutable(operatingSystem, deployerHomeDirectoryPath, workspace, launcher, listener);
 			listener.getLogger().println("Project Automator exited with status: "+ exitStatusCode);
 			if(exitStatusCode != 0) {
+				listener.getLogger().println("Deleting projectAutomator.xml file.");
+				ProjectAutomatorUtils.deleteFile(workspace);
 				throw new AbortException();
 			}
 		} catch(IOException ioe) {
@@ -211,7 +225,7 @@ public class DeployIntegrationServer extends Recorder implements SimpleBuildStep
 		
 		// Run Deployer Executable
 		try {
-			int statusCode = DeployerUtils.deployDeploymentCandidate(operatingSystem, deployerHomeDirectory, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), deploymentCandidateName, projectName, workspace, launcher, listener);
+			int statusCode = DeployerUtils.deployDeploymentCandidate(operatingSystem, deployerHomeDirectoryPath, deployerHost, deployerPort, deployerCredentials.getUsername(), deployerCredentials.getPassword().getPlainText(), deploymentCandidateName, projectName, workspace, launcher, listener);
 			listener.getLogger().println("Deployer exited with status: "+statusCode);
 			if(statusCode != 0) {
 				throw new AbortException();

@@ -1,6 +1,5 @@
 package io.jenkins.plugins.deployintegrationserver;
 
-import java.io.File;
 import java.io.IOException;
 
 import hudson.FilePath;
@@ -11,18 +10,21 @@ import hudson.model.TaskListener;
 
 public class DeployerUtils {
 
-	public static int deployDeploymentCandidate(String operatingSystem, String deployerHomeDirectory, String deployerHost, String deployerPort, String deployerUsername, String deployerPassword, String deploymentCandidateName, String projectName, FilePath reportFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+	public static int deployDeploymentCandidate(String operatingSystem, FilePath deployerHomeDirectory, String deployerHost, String deployerPort, String deployerUsername, String deployerPassword, String deploymentCandidateName, String projectName, FilePath reportFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+		FilePath deployerExecutable = new FilePath(deployerHomeDirectory, "Deployer.sh");
+		if(operatingSystem.contains("windows")) {
+			deployerExecutable = new FilePath(deployerHomeDirectory, "Deployer.bat");
+		} else if(operatingSystem.contains("mac")) {
+			deployerExecutable = new FilePath(deployerHomeDirectory, "deployerMac.sh");
+		}
+		if(!deployerExecutable.exists()) {
+			listener.getLogger().println(deployerExecutable + " not found.");
+			return -1;
+		}
 		
 		StringBuilder command = new StringBuilder();
-		command.append(deployerHomeDirectory);
-		command.append(File.separator);
-		if(operatingSystem.contains("windows")) {
-			command.append("Deployer.bat --deploy -dc ");
-		} else if(operatingSystem.contains("mac")) {
-			command.append("deployerMac.sh --deploy -dc ");
-		} else {
-			command.append("Deployer.sh --deploy -dc ");
-		}
+		command.append(deployerExecutable);
+		command.append(" --deploy -dc ");
 		command.append(deploymentCandidateName);
 		command.append(" -project ");
 		command.append(projectName);

@@ -26,6 +26,7 @@ import hudson.model.TaskListener;
 
 public class ProjectAutomatorUtils {
 	
+	private static final String PROJECT_AUTOMATOR_FILENAME = "projectAutomator.xml";
 	
 	public static Document generateDocument(String singleTargetAliases, String groupTargetAliases, String deployerHost, String deployerPort, String deployerUsername, String deployerPassword, String repositoryAlias, String repositoryDirectory, String[] composites, String projectName, String deploymentSetName, String deploymentMapName, String deploymentCandidateName) throws ParserConfigurationException {
 		
@@ -133,20 +134,30 @@ public class ProjectAutomatorUtils {
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		DOMSource source = new DOMSource(xmlDoc);
 		
-		FilePath outputProjectAutomatorPath = new FilePath(outputDirectory, "projectAutomator.xml");
+		FilePath outputProjectAutomatorPath = new FilePath(outputDirectory, PROJECT_AUTOMATOR_FILENAME);
 		
 		StreamResult result = new StreamResult(outputProjectAutomatorPath.write());
 		transformer.transform(source, result);
 	}
 	
-	public static int runProjectAutomatorExecutable(String operatingSystem, String deployerHomeDirectory, FilePath projectAutomatorFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
-		
-		String command = deployerHomeDirectory + File.separator + "projectautomatorUnix.sh " + projectAutomatorFileDirectory + File.separator + "projectAutomator.xml";
+	public static void deleteFile(FilePath fileDirectory) throws IOException, InterruptedException {
+		FilePath projectAutomatorPath = new FilePath(fileDirectory, PROJECT_AUTOMATOR_FILENAME);
+		projectAutomatorPath.delete();
+	}
+	
+	public static int runProjectAutomatorExecutable(String operatingSystem, FilePath deployerHomeDirectory, FilePath projectAutomatorFileDirectory, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+		FilePath projectAutomatorExecutable = new FilePath(deployerHomeDirectory, "projectautomatorUnix.sh");
 		if(operatingSystem.contains("windows")) {
-			command = deployerHomeDirectory + File.separator + "projectautomator.bat " + projectAutomatorFileDirectory + File.separator + "projectAutomator.xml";
+			projectAutomatorExecutable = new FilePath(deployerHomeDirectory, "projectautomator.bat");
 		} else if(operatingSystem.contains("mac")) {
-			command = deployerHomeDirectory + File.separator + "projectautomatorMac.sh " + projectAutomatorFileDirectory + File.separator + "projectAutomator.xml";
+			projectAutomatorExecutable = new FilePath(deployerHomeDirectory, "projectautomatorMac.sh");
 		}
+		if(!projectAutomatorExecutable.exists()) {
+			listener.getLogger().println(projectAutomatorExecutable + " not found.");
+			return -1;
+		}
+		
+		String command = projectAutomatorExecutable + " " + projectAutomatorFileDirectory + File.separator + PROJECT_AUTOMATOR_FILENAME;
 		
 		ProcStarter ps = launcher.launch();
 		Proc p = launcher.launch(ps.cmdAsSingleString(command).quiet(true).stdout(listener));
