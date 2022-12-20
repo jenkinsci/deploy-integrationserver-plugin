@@ -11,7 +11,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>deploy-integrationserver</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>1.0</version>
     <packaging>hpi</packaging>
     <name>Deploy to webMethods Integration Server Plugin</name>
     <description>This plugin allows to deploy webMethods Integration Server/ Microservices Runtime package(s).</description>
@@ -33,7 +33,7 @@
     <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
         <connection>scm:git:https://github.com/${gitHubRepo}</connection>
         <developerConnection>scm:git:https://github.com/${gitHubRepo}</developerConnection>
-        <tag>${scmTag}</tag>
+        <tag>deploy-integrationserver-1.0</tag>
         <url>https://github.com/${gitHubRepo}</url>
     </scm>    
     
