@@ -2,21 +2,29 @@
 
 ## Introduction
 
-This plugin allows deployment of webMethods Integration Server composites to the target webMethods Integration Server.
+This plugin deploys webMethods Integration Server composites to the target webMethods Integration Server or group.
 
 ## Getting started
 
-As a pre-requisite, make sure you have WmDeployer package installed and Jenkins has access to the project automator and deployer executables in the file system. These executables exist in the WmDeployer package's bin directory.
+Pre-requisites:
+1. WmDeployer package is installed on webMethods Integration Server.
+2. Target Server or Target Group alias is configured using Deployer.
+3. Deploy to webMethods Integration Server plugin is installed on Jenkins server.
  
-Follow the steps below to configure the plugin:
-1. Login to Jenkins server UI. 
-2. Install the Deploy to webMethods Integration Server Plugin on the Jenkins server.
-3. Create a new Jenkins job and go to "Configure" page.
-4. Scroll down and choose "Deploy to webMethods Integration Server" option from the "Add post-build action" drop-down.
-5. Provide the Repository details and assets that need to be deployed.
-6. Provide the Deployer details.
-7. Provide the Target details.
-8. Click "Apply" and "Save" to save the job and then click "Build" to execute the job.
+Configuration:
+1. Provide the Repository details and assets to be deployed.
+	* Alias - Alias for repository where asset composites exist. It can be any name. For example: testrepo.
+	* Directory Path - Path to directory where asset composites exist. Asset composites as a result of successful build using Asset Build Environment (ABE).
+	* Assets to Deploy - Name of the asset composites to be deployed. For example: TestPackage.
+2. Provide the Deployer details.
+	* Hostname - Domain name to access webMethods Integration Server with WmDeployer package installed. For example: localhost.
+	* Port - Port number to access webMethods Integration Server with WmDeployer package installed. Default is 5555.
+	* Credentials - Administrator username and password to access webMethods Integration Server with WmDeployer package installed.
+	* Home Directory - Path to bin directory of WmDeployer package. Jenkins node should be running on the same file system. For example: C:\SoftwareAG\IntegrationServer\instances\default\packages\WmDeployer\bin.
+	* Project Name - Name for Deployer project. It becomes the prefix for the DeploymentSet, DeploymentMap and DeploymentCandidate names. It can be any name. For example: TestProject.
+3. Provide the Target Integration Server/ Group details.
+	* Server Alias - Target server alias where assets needs to be deployed.
+	* Group Alias - Target server group alias where assets needs to be deployed.
 
 ## LICENSE
 
